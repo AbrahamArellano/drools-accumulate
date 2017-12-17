@@ -1,0 +1,21 @@
+package rules
+ 
+import com.javainuse.model.Location;
+import com.javainuse.model.Product;
+import com.javainuse.model.Warehouse;
+import java.util.List
+
+dialect  "mvel"
+
+rule "check decision"
+when
+    $location : Location () 
+    $products : List( size > 0 ) from accumulate (
+            $prod : Product (location.entity == $location.entity),
+            collectList( $prod )
+    )
+then
+    System.out.println( "On execution: " + $products.size());
+    Warehouse wh = new Warehouse($products);
+end
+
